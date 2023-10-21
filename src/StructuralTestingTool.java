@@ -43,14 +43,14 @@ public class StructuralTestingTool
             prevIteration = r;
             for (int c = 0; c < graph[r].length; c++)
             {
-                if (remainingEdges > 0)
+                if (remainingEdges > 0) //Find all vertices adjacent to first vertex
                 {
                     if (r == 0)
                     {
                         paths[r + c] = r + " -> " + graph[r][c];
                         remainingEdges--;
                     }
-                    else    //Find a consecutive path connecting all vertices from 0 to last.
+                    else    //Find a consecutive path connecting all vertices from origin to terminal vertex.
                     {
                         prevIteration--;
                         for (int i = 0; i < graph[prevIteration].length; i++)

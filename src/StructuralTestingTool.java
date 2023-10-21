@@ -7,6 +7,11 @@ public class StructuralTestingTool
     int rows;
     int[][] graph;
 
+    public StructuralTestingTool()
+    {
+
+    }
+
     public StructuralTestingTool(int vertices, int edges, int [][] graph)
     {
         this.edges = edges;
@@ -20,61 +25,74 @@ public class StructuralTestingTool
         return (edges - vertices + 2);
     }
 
-    public void setColumns()
+    public String[] getPathVariables()
     {
-
+        String[] paths = new String[getNumTests()];
+        return paths;
     }
 
     public void independentPaths()
     {
-        int vertex = 2;
-        String consecutivePath = null, otherPath = null;
+        int prevIteration,
+                remainingEdges = edges;
 
-        //Find a consecutive path connecting all vertices from 0 to last.
-        for (int r = 0; r < this.rows; r++)
-        {
-            for (int c = 0; c < graph[r].length; c++)
-            {
-                if (graph[r][c] == (r+1))
-                {
-                    if (r == 0 && c == 0)
-                    {
-                        consecutivePath = Integer.toString(r) + " -> " + Integer.toString((r+1));
-                    }
-                    else if (r < this.rows - 1)
-                    {
-                        consecutivePath += " -> " + Integer.toString((r+1));
-                    }
-                }
-            }
-        }
+        String[] paths = getPathVariables();
 
         for (int r = 0; r < this.rows; r++)
         {
+            prevIteration = r;
             for (int c = 0; c < graph[r].length; c++)
             {
-                if (graph[r][c] == vertex && r < this.rows - 1)
+                if (remainingEdges > 0)
                 {
                     if (r == 0)
                     {
-                        otherPath = Integer.toString(r) + " -> " + Integer.toString(graph[r][c]);
+                        paths[r + c] = r + " -> " + graph[r][c];
+                        remainingEdges--;
                     }
-                    else
+                    else    //Find a consecutive path connecting all vertices from 0 to last.
                     {
-
+                        prevIteration--;
+                        for (int i = 0; i < graph[prevIteration].length; i++)
+                        {
+                            if (graph[r][c] == graph[prevIteration][i] + 1 && r < this.rows - 1)
+                            {
+                                if (!paths[0].contains(Integer.toString(graph[r][c])))
+                                {
+                                    paths[0] += " -> " + graph[r][c];
+                                    remainingEdges--;
+                                }
+                            }
+                        }
+                        prevIteration++;
                     }
-                    vertex++;
                 }
             }
-            vertex = 2;
+        }
+        /*
+        {
+            if (graph[r][c] == graph[prevIteration][i])
+                            {
+                                if (r > 1 && graph[prevIteration][i] == graph[prevIteration - 1][i] + 1)
+                                {
+                                    paths[prevIteration - 1] += " -> " + graph[r][c];
+                                }
+                                else
+                                {
+                                    paths[prevIteration] += " -> " + graph[r][c];
+                                }
+                                remainingEdges--;
+                            }
         }
 
-
+        */
 
         System.out.println("******************************* ");
         System.out.println("-**Independent testing paths**- ");
-        System.out.println(consecutivePath);
-        System.out.println(otherPath);
+        for(String s : paths)
+        {
+            System.out.println(s);
+        }
         System.out.println("\n******************************* ");
     }
 

@@ -13,7 +13,6 @@ public class StructuralTestingTool
     int vertices;
     int edges;
     int rows;
-    int maxEdges;
     int[][] graph;
     String[] paths;
 
@@ -52,8 +51,7 @@ public class StructuralTestingTool
      */
     public String[] getPathVariables()
     {
-        String[] paths = new String[getNumTests()];
-        return paths;
+        return new String[getNumTests()];
     }
 
     /**
@@ -129,12 +127,11 @@ public class StructuralTestingTool
             independentPaths(index, visited);
         }
 
-        System.out.println("******************************* ");
-        System.out.println("-**Independent testing paths**- ");
+        System.out.println("***Independent testing paths***");
         for(String s : paths)
         {
             System.out.println(s);
         }
-        System.out.println("\n******************************* ");
+        System.out.println("******************************* ");
     }
 }

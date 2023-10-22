@@ -5,6 +5,7 @@
  * calls the StructuralTestingTool
  * visited method to begin depth
  * first traversal.
+ *
  * @author Brian Karimi, Katie Killian, Nicole Vadillo
  */
 public class MyProg

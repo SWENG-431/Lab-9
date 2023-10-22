@@ -16,9 +16,14 @@ public class MyProg
      */
     public static void main(String[] args)
     {
+        int vertices = 4,
+                edges = 5;
+
+        //DD Path graph
         int [][]values = {{1, 2}, {2, 3}, {3}, {}};
-        StructuralTestingTool graph = new StructuralTestingTool(4, 5, values);
+
+        StructuralTestingTool graph = new StructuralTestingTool(vertices, edges, values);
         System.out.println("\nTotal number of tests = " + graph.getNumTests());
-        graph.visited(0, new Boolean[4]);   //the boolean array corresponds to the number of vertices
+        graph.visited(0, new Boolean[vertices]);
     }
 }

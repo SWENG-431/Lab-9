@@ -1,6 +1,13 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Class StructuralTestingTool.
+ * Prints the independent testing
+ * paths of a given DD path graph
+ * using DFT.
+ *
+ * @author Brian Karimi, Katie Killian, Nicole Vadillo
+ */
 public class StructuralTestingTool
 {
     int vertices;
@@ -8,90 +15,94 @@ public class StructuralTestingTool
     int rows;
     int maxEdges;
     int[][] graph;
-    Integer[][] adjacentSets;
-    int adjSetsLength;
     String[] paths;
 
-    public StructuralTestingTool()
-    {
-
-    }
-
+    /**
+     *
+     * @param vertices takes in graph vertices.
+     * @param edges holds in graph edges.
+     * @param graph array containing adjacent vertices
+     *              to the graph index.
+     */
     public StructuralTestingTool(int vertices, int edges, int [][] graph)
     {
         this.edges = edges;
         this.vertices = vertices;
         this.graph = graph;
         this.rows = vertices;
-        setMaxEdges();
-        adjacentSets = new Integer[vertices * maxEdges][];
         paths = getPathVariables();
     }
 
+    /**
+     * Method that computes the
+     * Cyclomatic complexity of
+     * a given DD path graph.
+     * @return the number of test cases
+     */
     public int getNumTests()
     {
         return (edges - vertices + 2);
     }
 
+    /**
+     * Method that stores the independent
+     * paths obtained from the DFT.
+     * @return a string array to store
+     * each path.
+     */
     public String[] getPathVariables()
     {
         String[] paths = new String[getNumTests()];
         return paths;
     }
 
+    /**
+     * Method that simulates the DFT.
+     * @param i is the current vertex
+     *          being traversed.
+     * @param visited determines whether
+     *                the current vertex
+     *                has already been traversed.
+     */
     public void independentPaths(int i, Boolean[] visited)
     {
-        int prevIteration,
-                remainingEdges = edges,
-                tests = getNumTests() - 1;
+        int tests = getNumTests() - 1;
 
         for (int edge = 0; edge < graph[i].length; edge++)
         {
             if (!visited[i])
             {
-                adjacentSets[adjSetsLength] = new Integer[]{i, graph[i][edge]};
-                adjSetsLength++;
-
                 if (i == 0)
                 {
-                    paths[tests] = Integer.toString(i) + " -> " + graph[i][edge];
+                    paths[tests] = i + " -> " + graph[i][edge];
                     tests--;
                 }
                 else
                 {
-                    boolean found = false;
-                    for (Integer[] arr : adjacentSets)
+                    for (Integer arrVal : graph[i])
                     {
-                        if(arr != null)
+                        if (paths[tests].contains(Integer.toString(i)))
                         {
-                            for (Integer arrVal : arr)
+                            if (tests > 1)
                             {
-                                if (arrVal.equals(i) && paths[tests].contains(Integer.toString(i)))
+                                if (paths[tests - 2] != null && paths[tests - 2].contains(Integer.toString(i)))
                                 {
-                                    if (paths[tests].contains(Integer.toString(graph[i][edge])))
-                                    {
-                                        if (paths[tests - 1].contains(Integer.toString(i)))
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        paths[tests] += " -> " + graph[i][edge];
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                else if (arrVal.equals(i) && paths[tests - 1].contains(Integer.toString(i)))
+                                    paths[tests - 2] = "0 -> " + i + " -> " + graph[i][edge];
+                                } else if (paths[tests - 2] == null)
                                 {
-                                    paths[tests - 1] += " -> " + graph[i][edge];
-                                    found = true;
-                                    break;
+                                    paths[tests - 2] = "0 -> " + i + " -> " + graph[i][edge];
                                 }
                             }
+
+                            if (!paths[tests].contains(Integer.toString(arrVal)))
+                            {
+                                paths[tests] += " -> " + graph[i][edge];
+                            }
+                            break;
                         }
-                        if (found)
+                        else if (paths[tests - 1].contains(Integer.toString(i)))
                         {
+                            paths[tests - 1] += " -> " + graph[i][edge];
                             break;
                         }
                     }
@@ -99,92 +110,20 @@ public class StructuralTestingTool
             }
         }
         visited[i] = true;
-/*
-        for (int r = 0; r < this.rows; r++)
-        {
-            prevIteration = r;
-            for (int c = 0; c < graph[r].length; c++)
-            {
-                if (remainingEdges > 0 && tests < getNumTests()) //Find all vertices adjacent to first vertex
-                {
-                    if (r == 0)
-                    {
-                        paths[tests] = r + " -> " + graph[r][c];
-                        tests++;
-                        remainingEdges--;
-                    } else
-                    {
-                        prevIteration--;
-                        for (int i = 0; i < graph[prevIteration].length; i++)
-                        {
-                            //Find a consecutive path connecting all vertices from origin to terminal vertex.
-                            if (graph[r][c] == graph[prevIteration][i] + 1 && r < this.rows - 1)
-                            {
-                                if (!paths[0].contains(Integer.toString(graph[r][c])))
-                                {
-                                    paths[0] += " -> " + graph[r][c];
-                                    remainingEdges--;
-                                }
-                            }
-                        }
-                        prevIteration++;
-                    }
-                }
-            }
-
-            //Find all other paths
-            int index = 0;
-            for (String component : paths)
-            {
-                for (int[] components : graph)
-                {
-                    for (int values : components)
-                    {
-                        if (tests >= getNumTests())
-                        {
-                            tests--;
-                        }
-                        if (component != null && !component.contains(index + " -> " + Integer.toString(values)))
-                        {
-                            if (index < this.rows - 1)
-                            {
-                                paths[tests] = index + " -> " + values;
-
-                                if ()
-                            }
-                            else
-                                break;
-                        }
-                    }
-                    index++;
-                }
-            }
-        }
-        /*
-        {
-            if (graph[r][c] == graph[prevIteration][i])
-                            {
-                                if (r > 1 && graph[prevIteration][i] == graph[prevIteration - 1][i] + 1)
-                                {
-                                    paths[prevIteration - 1] += " -> " + graph[r][c];
-                                }
-                                else
-                                {
-                                    paths[prevIteration] += " -> " + graph[r][c];
-                                }
-                                remainingEdges--;
-                            }
-        }
-
-        */
     }
 
+    /**
+     * Method that traverses the DD path
+     * graph and sets the corresponding
+     * boolean variable after each traversal.
+     * @param i is the current vertex being
+     *          handled.
+     * @param visited is the corresponding
+     *                boolean variable.
+     */
     public void visited(int i, Boolean[] visited)
     {
-        for (int index = 0; index < visited.length; index++)
-        {
-            visited[index] = false;
-        }
+        Arrays.fill(visited, false);
         for (int index = i; index < visited.length; index++)
         {
             independentPaths(index, visited);
@@ -198,25 +137,4 @@ public class StructuralTestingTool
         }
         System.out.println("\n******************************* ");
     }
-
-    public void setMaxEdges()
-    {
-        for (int rows = 0; rows < this.rows; rows++)
-        {
-            for (int edges = 0; edges < graph[rows].length; edges++)
-            {
-                if (rows == 0)
-                {
-                    maxEdges = graph[rows].length;
-                }
-
-                if (maxEdges < graph[rows].length)
-                {
-                    maxEdges = graph[rows].length;
-                }
-            }
-        }
-    }
-
-
 }

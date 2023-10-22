@@ -12,7 +12,6 @@ public class StructuralTestingTool
 {
     int vertices;
     int edges;
-    int rows;
     int[][] graph;
     String[] paths;
 
@@ -28,7 +27,6 @@ public class StructuralTestingTool
         this.edges = edges;
         this.vertices = vertices;
         this.graph = graph;
-        this.rows = vertices;
         paths = getPathVariables();
     }
 

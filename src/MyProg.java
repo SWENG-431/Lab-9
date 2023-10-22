@@ -24,6 +24,6 @@ public class MyProg
 
         StructuralTestingTool graph = new StructuralTestingTool(vertices, edges, values);
         System.out.println("\nTotal number of tests = " + graph.getNumTests());
-        graph.visited(0, new Boolean[vertices]);
+        graph.visited(0, new Boolean[vertices - 1]);
     }
 }
